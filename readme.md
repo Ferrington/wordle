@@ -1,0 +1,1 @@
+A command line implementation of Wordle - with a mode for kids!

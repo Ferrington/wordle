@@ -1,0 +1,2 @@
+Kids 4 letters: 288
+Kids 5 letters: 211
