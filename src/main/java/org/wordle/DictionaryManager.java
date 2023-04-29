@@ -10,8 +10,8 @@ import java.util.Scanner;
 
 public class DictionaryManager {
     public static void addWordsToKidsDictionary(String fileName) {
-        final String FOUR_LETTER_FILE = "four-letter-words.txt";
-        final String FIVE_LETTER_FILE = "five-letter-words.txt";
+        final String FOUR_LETTER_FILE = "word-lists/four-letter-words.txt";
+        final String FIVE_LETTER_FILE = "word-lists/five-letter-words.txt";
 
         List<String> fourLetterWords = getWordsFromFile(FOUR_LETTER_FILE);
         List<String> fiveLetterWords = getWordsFromFile(FIVE_LETTER_FILE);

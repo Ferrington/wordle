@@ -168,14 +168,14 @@ public class Wordle {
 
 
     private Set<String> getWordList() {
-        List<String> answers = DictionaryManager.getWordsFromFile("wordle-words.txt");
-        List<String> guesses = DictionaryManager.getWordsFromFile("five-letter-guesses.txt");
+        List<String> answers = DictionaryManager.getWordsFromFile("word-lists/wordle-words.txt");
+        List<String> guesses = DictionaryManager.getWordsFromFile("word-lists/five-letter-guesses.txt");
 
         return Stream.concat(answers.stream(), guesses.stream()).collect(Collectors.toSet());
     }
 
     private String chooseTargetWord() {
-        List<String> words = DictionaryManager.getWordsFromFile("wordle-words.txt");
+        List<String> words = DictionaryManager.getWordsFromFile("word-lists/wordle-words.txt");
         int randomIndex = rand.nextInt(words.size());
 
         return words.get(randomIndex).toUpperCase();
