@@ -32,14 +32,22 @@ public class DictionaryManager {
     }
 
     public static List<String> getWordsFromFile(String fileName) {
+        return getWordsFromFile(fileName, null);
+    }
+
+    public static List<String> getWordsFromFile(String fileName, Difficulty difficulty) {
+        int stoppingPoint = difficulty == null ? Integer.MAX_VALUE : difficulty.lines;
         List<String> result = new ArrayList<>();
         try {
             File myFile = new File(fileName);
             Scanner fileReader = new Scanner(myFile);
-            while(fileReader.hasNextLine()) {
+            int i = 0;
+            while(fileReader.hasNextLine() && i < stoppingPoint) {
                 String word = fileReader.nextLine().trim().toUpperCase();
-                if (word.length() > 0)
+                if (word.length() > 0) {
                     result.add(word);
+                    i++;
+                }
             }
             fileReader.close();
         } catch (FileNotFoundException e) {

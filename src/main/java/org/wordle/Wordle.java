@@ -14,19 +14,27 @@ public class Wordle {
     final String K = "\033[0;30m";
     final String K_END = "\033[0m";
 
+    GameMode mode;
+    int wordLength;
+    Difficulty difficulty;
     int guess;
     Map<Character, Character> availableLetters;
     String guessHistory;
     String errorMessage;
     String targetWord;
+    String answerFile;
+    String guessFile;
     Set<String> wordList;
     Random rand;
     Scanner scan;
 
-    Wordle() {
+    Wordle(Scanner scan, GameMode mode, int wordLength, Difficulty difficulty) {
+        this.scan = scan;
+        this.mode = mode;
+        this.wordLength = wordLength;
+        this.difficulty = difficulty;
         guess = 1;
         rand = new Random();
-        scan = new Scanner(System.in);
         guessHistory = "";
         errorMessage = "";
 
@@ -34,6 +42,7 @@ public class Wordle {
         for (char c = 'A'; c <= 'Z'; c++) {
             availableLetters.put(c, '0');
         }
+        setWordLists();
     }
 
     public void start() {
@@ -155,27 +164,41 @@ public class Wordle {
             errorMessage = "";
 
 
-            System.out.format("Attempt %s: Guess a 5-letter word.\n", attemptNumber);
+            System.out.format("Attempt %s: Guess a %s-letter word.\n", attemptNumber, wordLength);
             String guess = scan.nextLine().trim().toUpperCase();
             if (wordList.contains(guess))
                 return guess;
-            else if (guess.length() != 5)
-                errorMessage = "Please enter a 5-letter word.\n";
+            else if (guess.length() != wordLength)
+                errorMessage = String.format("Please enter a %s-letter word.\n", wordLength);
             else
                 errorMessage = "Are you sure that's a word?\n";
         }
     }
 
+    private void setWordLists() {
+        if (mode == GameMode.WORDLE)
+            answerFile = "word-lists/wordle-words.txt";
+        else if (wordLength == 4)
+            answerFile = "word-lists/four-letter-words.txt";
+        else
+            answerFile = "word-lists/five-letter-words.txt";
+
+        if (wordLength == 5)
+            guessFile = "word-lists/five-letter-guesses.txt";
+        else
+            guessFile = "word-lists/four-letter-guesses.txt";
+    }
 
     private Set<String> getWordList() {
-        List<String> answers = DictionaryManager.getWordsFromFile("word-lists/wordle-words.txt");
-        List<String> guesses = DictionaryManager.getWordsFromFile("word-lists/five-letter-guesses.txt");
+        List<String> answers = DictionaryManager.getWordsFromFile(answerFile);
+        List<String> guesses = DictionaryManager.getWordsFromFile(guessFile);
 
         return Stream.concat(answers.stream(), guesses.stream()).collect(Collectors.toSet());
     }
 
     private String chooseTargetWord() {
-        List<String> words = DictionaryManager.getWordsFromFile("word-lists/wordle-words.txt");
+        System.out.println(answerFile);
+        List<String> words = DictionaryManager.getWordsFromFile(answerFile, difficulty);
         int randomIndex = rand.nextInt(words.size());
 
         return words.get(randomIndex).toUpperCase();
