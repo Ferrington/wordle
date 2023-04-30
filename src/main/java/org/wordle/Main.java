@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 public class Main {
     static Scanner scan;
+    
     public static void main(String[] args) {
         scan = new Scanner(System.in);
 
@@ -11,8 +12,28 @@ public class Main {
         int wordLength = mode == GameMode.WORDLE_JUNIOR ? getWordLength() : 5;
         Difficulty difficulty = mode == GameMode.WORDLE_JUNIOR ? getDifficulty() : null;
 
-        Wordle wordle = new Wordle(scan, mode, wordLength, difficulty);
-        wordle.start();
+        boolean playAgain = true;
+        while (playAgain) {
+            Wordle wordle = new Wordle(scan, mode, wordLength, difficulty);
+            wordle.start();
+            playAgain = getPlayAgain();
+        }
+    }
+
+    private static boolean getPlayAgain() {
+        while (true) {
+            System.out.println("Would you like to play again?");
+            System.out.println("\t1. Yes");
+            System.out.println("\t2. No");
+            String response = scan.nextLine().trim();
+            if (response.charAt(0) == '1') {
+                return true;
+            } else if (response.charAt(0) == '2') {
+                Wordle.clearConsole();
+                System.out.println("Thanks for playing!");
+                return false;
+            }
+        }
     }
 
     private static Difficulty getDifficulty() {

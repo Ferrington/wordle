@@ -57,7 +57,7 @@ public class Wordle {
 
             if (guess.equals(targetWord)) {
                 printAvailableLetters();
-                System.out.format("You Win! You got it in %s attempt%s.", i, i == 1 ? "" : "s");
+                System.out.format("You Win! You got it in %s attempt%s.\n\n", i, i == 1 ? "" : "s");
                 return;
             }
         }
@@ -204,7 +204,7 @@ public class Wordle {
         return words.get(randomIndex).toUpperCase();
     }
 
-    private void clearConsole() {
+    public static void clearConsole() {
         try {
             if (System.getProperty("os.name").contains("Windows")) {
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
