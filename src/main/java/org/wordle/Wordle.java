@@ -7,12 +7,12 @@ import java.util.stream.Stream;
 
 public class Wordle {
     final int NUMBER_OF_ATTEMPTS = 6;
-    final String Y = "\033[0;33m";
-    final String Y_END = "\033[0m";
-    final String G = "\033[0;32m";
-    final String G_END = "\033[0m";
-    final String K = "\033[0;30m";
-    final String K_END = "\033[0m";
+    final static String Y = "\033[0;33m";
+    final static String Y_END = "\033[0m";
+    final static String G = "\033[0;32m";
+    final static String G_END = "\033[0m";
+    final static String K = "\033[0;30m";
+    final static String K_END = "\033[0m";
 
     GameMode mode;
     int wordLength;
@@ -204,6 +204,40 @@ public class Wordle {
         return words.get(randomIndex).toUpperCase();
     }
 
+    public static void welcomeAnimation() {
+        final int WORD_HEIGHT = 7;
+        final int WORD_WIDTH = 11;
+        Map<Character, String[]> letters = DictionaryManager.getAnimationLettersFromFile("word-lists/wordle-animation.txt", WORD_WIDTH, WORD_HEIGHT);
+
+        final String[] WORDS = new String[]{"CEDARS", "POWDER", "WORDLE"};
+        final String[] COLORS = new String[]{" YY Y ", " GYGYY", "GGGGGG"};
+
+        for (int wordIndex = 0; wordIndex < WORDS.length; wordIndex++) {
+            clearConsole();
+            String COLOR = COLORS[wordIndex];
+            for (int line = 0; line < WORD_HEIGHT; line++) {
+                for (int letterIndex = 0; letterIndex < WORDS[wordIndex].length(); letterIndex++) {
+                    char colorChar = COLOR.charAt(letterIndex);
+                    String color = "";
+                    String color_end = "";
+                    if (colorChar == 'G') {
+                        color = G;
+                        color_end = G_END;
+                    } else if (colorChar == 'Y') {
+                        color = Y;
+                        color_end = Y_END;
+                    }
+
+                    String segment = letters.get(WORDS[wordIndex].charAt(letterIndex))[line];
+                    System.out.format("%s%s%s", color, segment, color_end);
+                }
+                System.out.print("\n");
+            }
+            sleep(2000);
+        }
+        System.out.print("\n\n");
+    }
+
     public static void clearConsole() {
         try {
             if (System.getProperty("os.name").contains("Windows")) {
@@ -216,7 +250,7 @@ public class Wordle {
         }
     }
 
-    private void sleep(int milliseconds) {
+    private static void sleep(int milliseconds) {
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {

@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class DictionaryManager {
     public static void addWordsToKidsDictionary(String fileName) {
@@ -55,6 +53,42 @@ public class DictionaryManager {
         }
 
         return result;
+    }
+
+    public static Map<Character, String[]> getAnimationLettersFromFile(String fileName, int WORD_WIDTH, int WORD_HEIGHT) {
+        final String LETTERS = "WORDLECASP";
+
+        List<String> lines = new ArrayList<>();
+        try {
+            File myFile = new File(fileName);
+            Scanner fileReader = new Scanner(myFile);
+            while(fileReader.hasNextLine()){
+                String line = fileReader.nextLine();
+                line = String.format("%-"+ WORD_WIDTH +"s", line);
+                if (line.length() > 0)
+                    lines.add(line);
+            }
+            fileReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Map<Character, String[]> letters = new HashMap<>();
+        int charIndex = 0;
+        String[] letterLines = new String[WORD_HEIGHT];
+        for (int i = 0; i < lines.size() + 1; i++) {
+            if (i % WORD_HEIGHT == 0 && i != 0) {
+                letters.put(LETTERS.charAt(charIndex), letterLines);
+                letterLines = new String[WORD_HEIGHT];
+                charIndex++;
+
+                if (i == lines.size())
+                    break;
+            }
+            letterLines[i % WORD_HEIGHT] = lines.get(i);
+        }
+
+        return letters;
     }
 
     private static void updateFile(String fileName, List<String> words) {
