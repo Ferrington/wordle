@@ -10,11 +10,11 @@ Clone this repository:
 
 `git clone https://github.com/Ferrington/wordle.git`
 
-Descend into the `/trouble` directory and build the program:
+Descend into the `/wordle` directory and build the program:
 
 `javac -d target src/main/java/org/wordle/*.java`
 
 Then run the program:
 
-`java -cp ./target org.trouble.Main`
+`java -cp ./target org.wordle.Main`
 
