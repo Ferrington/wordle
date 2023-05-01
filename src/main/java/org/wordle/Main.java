@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args) {
         scan = new Scanner(System.in);
 
-        Wordle.welcomeAnimation();
+//        Wordle.welcomeAnimation();
 
         GameMode mode = getModeSelection();
         int wordLength = mode == GameMode.WORDLE_JUNIOR ? getWordLength() : 5;

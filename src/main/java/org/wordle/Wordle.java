@@ -47,7 +47,6 @@ public class Wordle {
 
     public void start() {
         targetWord = chooseTargetWord();
-        System.out.println(targetWord);
         wordList = getWordList();
 
         for (int i = 1; i <= NUMBER_OF_ATTEMPTS; i++) {
@@ -193,11 +192,32 @@ public class Wordle {
         List<String> answers = DictionaryManager.getWordsFromFile(answerFile);
         List<String> guesses = DictionaryManager.getWordsFromFile(guessFile);
 
-        return Stream.concat(answers.stream(), guesses.stream()).collect(Collectors.toSet());
+        if (mode == GameMode.WORDLE_JUNIOR) {
+            List<String> customGuesses = wordLength == 5 ?
+                    DictionaryManager.getWordsFromFile("word-lists/five-letter-words-custom.txt"):
+                    DictionaryManager.getWordsFromFile("word-lists/four-letter-words-custom.txt");
+
+            if (customGuesses.size() > 0)
+                return concatenateToSet(answers, guesses, customGuesses);
+        }
+
+        return concatenateToSet(answers, guesses);
     }
 
     private String chooseTargetWord() {
-        System.out.println(answerFile);
+        if (mode == GameMode.WORDLE_JUNIOR) {
+            List<String> words =
+                    wordLength == 5 ?
+                    DictionaryManager.getWordsFromFile("word-lists/five-letter-words-custom.txt"):
+                    DictionaryManager.getWordsFromFile("word-lists/four-letter-words-custom.txt");
+
+            int wordsSize = words.size();
+            if (wordsSize > 0 && rand.nextInt(100) < Math.min(5 + (wordsSize * .5), 20)) {
+                int randomIndex = rand.nextInt(words.size());
+                return words.get(randomIndex).toUpperCase();
+            }
+        }
+
         List<String> words = DictionaryManager.getWordsFromFile(answerFile, difficulty);
         int randomIndex = rand.nextInt(words.size());
 
@@ -256,5 +276,13 @@ public class Wordle {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    @SafeVarargs
+    public static<T> Set<T> concatenateToSet(List<T>... lists)
+    {
+        return Stream.of(lists)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
     }
 }
