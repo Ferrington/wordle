@@ -4,11 +4,17 @@ import java.util.Scanner;
 
 public class Main {
     static Scanner scan;
+    static int[] statistics;
+    static int streak;
+    static int maxStreak;
 
     public static void main(String[] args) {
         scan = new Scanner(System.in);
+        statistics = new int[7];
+        streak = 0;
+        maxStreak = 0;
 
-//        Wordle.welcomeAnimation();
+        Wordle.welcomeAnimation();
 
         GameMode mode = getModeSelection();
         int wordLength = mode == GameMode.WORDLE_JUNIOR ? getWordLength() : 5;
@@ -17,9 +23,50 @@ public class Main {
         boolean playAgain = true;
         while (playAgain) {
             Wordle wordle = new Wordle(scan, mode, wordLength, difficulty);
-            wordle.start();
+            int numberOfGuesses = wordle.start();
+
+            statistics[numberOfGuesses]++;
+            if (numberOfGuesses == 0) {
+                streak = 0;
+            } else {
+                streak++;
+                if (streak > maxStreak)
+                    maxStreak = streak;
+            }
+
+            printStatistics();
             playAgain = getPlayAgain();
         }
+    }
+
+    private static void printStatistics() {
+        int totalGamesPlayed = 0;
+        int maxGuesses = 0;
+        for (int i = 0; i < statistics.length; i++) {
+            totalGamesPlayed += statistics[i];
+            if (i > 0 && statistics[i] > maxGuesses)
+                maxGuesses = statistics[i];
+        }
+
+        int winPercent = 100 * (totalGamesPlayed - statistics[0]) / totalGamesPlayed;
+
+        System.out.println("Played\tWin %\tCurrent Streak\tMax Streak");
+        System.out.format("%6s\t%5s\t%14s\t%10s\n", totalGamesPlayed, winPercent, streak, maxStreak);
+
+        System.out.println("Guess Distribution");
+        for (int i = 1; i <= 6; i++) {
+            int bars = 40 * statistics[i] / maxGuesses;
+            String line = "";
+            for (int j = 0; j < bars; j++) {
+                line += "-";
+            }
+
+            String guessCountDisplay = statistics[i] > 0 ? String.valueOf(statistics[i]) : "";
+            System.out.format("%s |", i);
+            System.out.format("%-40s| %s\n", line, guessCountDisplay);
+        }
+
+        System.out.println("\n");
     }
 
     private static boolean getPlayAgain() {
@@ -58,7 +105,7 @@ public class Main {
 
             System.out.println("Invalid Selection");
         }
-    };
+    }
 
     private static int getWordLength() {
         while (true) {

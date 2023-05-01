@@ -45,7 +45,7 @@ public class Wordle {
         setWordLists();
     }
 
-    public void start() {
+    public int start() {
         targetWord = chooseTargetWord();
         wordList = getWordList();
 
@@ -57,10 +57,11 @@ public class Wordle {
             if (guess.equals(targetWord)) {
                 printAvailableLetters();
                 System.out.format("You Win! You got it in %s attempt%s.\n\n", i, i == 1 ? "" : "s");
-                return;
+                return i;
             }
         }
         System.out.format("You Lose :( The answer was %s.\n", targetWord);
+        return 0;
     }
 
     private void animateGuessHistory() {
